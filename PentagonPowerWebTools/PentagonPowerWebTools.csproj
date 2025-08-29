@@ -130,6 +130,7 @@
     <Compile Include="Modules\DownloadTool\Classes\DownloadRequest.cs" />
     <Compile Include="Modules\DownloadTool\Controllers\DownloadToolController.cs" />
     <Compile Include="Modules\ModulesController.cs" />
+    <Compile Include="Modules\Templates\Controllers\TemplateController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +156,7 @@
     <Content Include="Modules\DownloadTool\Scripts\DownloadTool.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Modules\Templates\Scripts\Template.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -164,6 +166,7 @@
     <Content Include="Modules\DownloadTool\Views\TestPage.cshtml" />
     <Content Include="Modules\Web.config" />
     <Content Include="Modules\Modules.config.json" />
+    <Content Include="Modules\Templates\Views\TestPage.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -196,6 +199,7 @@
     <Folder Include="Models\" />
     <Folder Include="Views\DownloadTool\" />
     <Folder Include="Views\Modules\" />
+    <Folder Include="Views\Template\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

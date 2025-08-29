@@ -32,7 +32,7 @@
         meridianDoc = window.top.document;
 
         // Add Pentagon ribbon
-        const ribbon = meridianDoc.customAPI.AddRibbon('Pentagon', 'Exchange');
+        const ribbon = meridianDoc.customAPI.AddRibbon('Pentagon', 'Exchange');         
         console.log("[PentagonTools] Ribbon added successfully");
 
         // Fetch module list from server
