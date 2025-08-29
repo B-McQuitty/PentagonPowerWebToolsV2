@@ -1,0 +1,8 @@
+{
+  "modules": [
+    {
+      "name": "DownloadTool",
+      "enabled": true
+    }
+  ]
+}
