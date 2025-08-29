@@ -55,7 +55,7 @@
             const initFnName = `Init${moduleName}`;
             if (window[initFnName]) {
                 console.log(`[PentagonTools] Initializing module: ${initFnName}`);
-                window[initFnName](ribbon, meridianDoc, currentVaultDisplayName);
+                window[initFnName](ribbon, meridianDoc, currentVaultDisplayName, baseUrl);
                 console.log(`[PentagonTools] Module initialized successfully: ${initFnName}`);
             } else {
                 console.warn(`[PentagonTools] No Init function found for module: ${initFnName}`);

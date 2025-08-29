@@ -1,14 +1,21 @@
-﻿window.InitDownloadTool = function (ribbon, meridianDoc, vaultName) {
+﻿window.InitDownloadTool = function (ribbon, meridianDoc, vaultName, baseURL) {
+    const downloadToolPingEndpoint = baseURL + '/DownloadTool/Ping'
+    const downloadToolDownloadFilesEndpoint = baseURL + '/DownloadTool/DownloadFiles'
     const selectedItems = {}; // Dictionary: { oid: url }
     const vaultDisplayName = vaultName;
+    const selectedOids = [];
 
     // Add ribbon section and buttons
     const s2 = meridianDoc.customAPI.AddRibbonSection(ribbon, 'Batch Download', '');
     const btnBatchDownload = meridianDoc.customAPI.AddRibbonCommand(ribbon, s2, 'Download Files', null, 1, 'cmdBatchDownload', '/Images/PDFSearch_16.png');
 
+    // Add batch download Server Button
+    const btnBatchServerDownload = meridianDoc.customAPI.AddRibbonCommand(ribbon, s2, 'Download Files (zip)', 'cmdBatchDownload' ,1 , 'cmdBatchDownloadZip', '/Images/PDFSearch_16.png')
+
     // Add click handler
     meridianDoc.addEventListener('bc:CommandSelected', function (event) {
-        if (event.CommandName === 'cmdBatchDownload') {
+        if (event.CommandName === 'cmdBatchDownload')
+        {
             console.log('Batch Download clicked!');
 
             const oids = Object.keys(selectedItems);
@@ -33,6 +40,9 @@
             });
 
         }
+        if (event.CommandName === 'cmdBatchDownloadZip') {
+            callBatchDownloadService(selectedOids);
+        }
     });
 
     // Add Select Item handler
@@ -40,6 +50,11 @@
         if (!event.oid) return;
 
         if (event.checkboxClicked) {
+            // add oid if not already present
+            if (!selectedOids.includes(event.oid)) {
+                selectedOids.push(event.oid);
+            }
+
             // Add item to dictionary
             // Replace this with real URL if you have one
             var $row = $("a[oid='" + event.oid + "']").closest("tr");
@@ -49,6 +64,12 @@
             selectedItems[event.oid] = url;
             console.log(`Item selected: ${event.oid} -> ${url}`);
         } else {
+            // Remove oid from array
+            const index = selectedOids.indexOf(event.oid);
+            if (index !== -1) {
+                selectedOids.splice(index, 1);
+            }
+
             // Remove item from dictionary
             delete selectedItems[event.oid];
             console.log(`Item unselected: ${event.oid}`);
@@ -90,5 +111,56 @@
         // Build URL without adding vaultName twice
         const folderPath = folders.length ? folders.map(f => encodeURIComponent(f)).join("/") + "/" : "";
         return baseUrl + folderPath + encodeURIComponent(fileName);
+    }
+
+    function callBatchDownloadService(documentList) {
+        const payload = {
+            data: documentList,
+            vaultName: vaultDisplayName
+        };
+
+        console.log("Payload being sent to server for batch download:", JSON.stringify(payload));
+
+        fetch(downloadToolDownloadFilesEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.text().then(text => {
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    data = { error: text || "Invalid JSON response" };
+                }
+                if (!response.ok) {
+                    const error = new Error('HTTP error ' + response.status);
+                    error.responseData = data;
+                    throw error;
+                }
+                return data;
+            }))
+            .then(data => {
+                console.log("Server responded:", data);
+
+                const filedUrl = data.FiledURL;
+                if (filedUrl) {
+                    const encodedUrl = filedUrl.split('/').map(encodeURIComponent).join('/');
+                    const fullUrl = customscriptURL + encodedUrl;
+
+                    const link = document.createElement('a');
+                    link.href = fullUrl;
+                    link.download = filedUrl.substring(filedUrl.lastIndexOf('/') + 1);
+
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            })
+            .catch(err => {
+                console.error("Request failed:", err);
+            });
     }
 };
