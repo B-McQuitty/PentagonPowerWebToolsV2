@@ -2,7 +2,7 @@
   "modules": [
     {
       "name": "DownloadTool",
-      "enabled": true
+      "enabled": false
     }
   ]
 }

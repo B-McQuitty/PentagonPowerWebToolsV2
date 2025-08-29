@@ -16,12 +16,20 @@ namespace PentagonPowerWebTools.Modules.DownloadTool.Controllers
 {
     public class DownloadToolController : Controller
     {
+        #region Web API EndPoints
+
+        #region Get
+
         // GET /DownloadTool/Ping
         [HttpGet]
         public ActionResult Ping()
         {
             return Json(new { status = "ok", message = "DownloadTool API is alive" }, JsonRequestBehavior.AllowGet);
         }
+
+        #endregion
+
+        #region Post
 
         // POST /DownloadTool/DownloadFiles
         [HttpPost]
@@ -84,7 +92,7 @@ namespace PentagonPowerWebTools.Modules.DownloadTool.Controllers
 
                 // Clean up batch folder
                 DeleteDirectory(batchFolder);
-                
+
                 return Json(new
                 {
                     status = "ok",
@@ -102,6 +110,11 @@ namespace PentagonPowerWebTools.Modules.DownloadTool.Controllers
             }
         }
 
+        #endregion
+
+        #endregion
+
+        #region Helper Methods
         public void DeleteDirectory(string targetDir)
         {
             foreach (var file in Directory.GetFiles(targetDir, "*", SearchOption.AllDirectories))
@@ -117,5 +130,8 @@ namespace PentagonPowerWebTools.Modules.DownloadTool.Controllers
 
             Directory.Delete(targetDir, true);
         }
+
+        #endregion
+
     }
 }
